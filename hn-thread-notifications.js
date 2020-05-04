@@ -2,8 +2,8 @@
 // @name         hn-thread-notifications
 // @namespace    hackernews
 // @version      0.2
-// @description  Indicates visually if messgages are read or unread within any thread on hackernews.
-//               A message is considered read when the thread you are on is refreshed.
+// @description  Indicates visually if comments are read or unread within any thread on hackernews.
+//               A comment is considered read when the thread you are on is refreshed.
 // @author       Valefant
 // @match        https://news.ycombinator.com/item*
 // @grant        GM_setValue
@@ -23,16 +23,17 @@
     if (GM_getValue(threadId) === undefined) {
         // GM_setValue does not support lists therefore I have to encode the ids as one big string
         GM_setValue(threadId, allMessageIdsAsString);
-        // Mark messages as unread
+        // Mark comments as unread
         [...document.querySelectorAll(".comhead")].forEach(commentHead => commentHead.prepend(createIndicator("green").cloneNode(true)));
     } else {
         retreivedIds
         .split(" ")
+        // Comments can be deleted in the meantime therefore we have to check the existence
         .filter(id => document.querySelector(`[id='${id}']`) !== null)
         .map(id => document.querySelector(`[id='${id}']`).querySelector(".comHead"))
         .forEach(head => head.prepend(read.cloneNode(true)));
 
-        // Mark messages as read by comparing the ids retreived from the storage minus the ids which are determined on entering the thread
+        // Mark comments as read by comparing the ids retreived from the storage minus the ids which are determined on entering the thread
         allMessageIdsAsString
         .split(" ")
         .filter(id => !retreivedIds.split(" ").includes(id))

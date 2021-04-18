@@ -28,9 +28,11 @@
     } else {
         retreivedIds
         .split(" ")
-        // Comments can be deleted in the meantime therefore we have to check the existence
+        // comments can be deleted in the meantime therefore we have to check the existence
         .filter(id => document.querySelector(`[id='${id}']`) !== null)
         .map(id => document.querySelector(`[id='${id}']`).querySelector(".comHead"))
+        // Ask HN: does not have .comHead class
+        .filter(head => head !== null)
         .forEach(head => head.prepend(read.cloneNode(true)));
 
         // Mark comments as read by comparing the ids retreived from the storage minus the ids which are determined on entering the thread
@@ -38,6 +40,8 @@
         .split(" ")
         .filter(id => !retreivedIds.split(" ").includes(id))
         .map(id => document.querySelector(`[id='${id}']`).querySelector(".comHead"))
+        // Ask HN: does not have .comHead class
+        .filter(head => head !== null)
         .forEach(head => head.prepend(unread.cloneNode(true)));
 
         GM_setValue(threadId, allMessageIdsAsString);
